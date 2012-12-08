@@ -102,7 +102,7 @@ Here are some example api calls via [Curl]. Of course the response depends on yo
 **Find all host objects**
 
 ```
-curl -H "content-type: application/json" 'http://admin:password@localhost:5000/host'
+$ curl -H "content-type: application/json" 'http://admin:password@localhost:5000/host'
 ```
 ```json
 [
@@ -135,7 +135,7 @@ curl -H "content-type: application/json" 'http://admin:password@localhost:5000/h
 
 **Get all hosts with _testhost_ in the `host_name` field**
 ```
-curl -H "content-type: application/json" 'http://admin:password@localhost:5000/host?host_name=testhost'
+$ curl -H "content-type: application/json" 'http://admin:password@localhost:5000/host?host_name=testhost'
 ```
 ```json
 [
@@ -170,7 +170,7 @@ curl -H "content-type: application/json" 'http://admin:password@localhost:5000/h
 **Delete all host objects with _testhost_ in the `host_name` field**
 
 ```
-curl -X DELETE -H "content-type: application/json" 'http://admin:password@localhost:5000/host?host_name=testhost'
+$ curl -X DELETE -H "content-type: application/json" 'http://admin:password@localhost:5000/host?host_name=testhost'
 ```
 ```json
 {
@@ -196,7 +196,7 @@ curl -X DELETE -H "content-type: application/json" 'http://admin:password@localh
 ### Reload Monitoring Core
 
 ```
-curl -X POST -H "content-type: application/json" 'http://admin:password@localhost:5000/control?restart'
+$ curl -X POST -H "content-type: application/json" 'http://admin:password@localhost:5000/control?restart'
 ```
 ```json
 {
