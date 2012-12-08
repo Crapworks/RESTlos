@@ -20,7 +20,7 @@ To get everything just up and running, install all of the required packages ment
 $ git clone https://github.com/Crapworks/RESTlos.git
 ```
 
-In the newly created directory, edit the file `config.json` to fit your nagios/icinga/whatever configuration. To get everything running, you just need to change the properties `nagios\_main\_cfg` to your main core configuration file and `output\_dir` to the direcory where the api should manage the object files (and where the user the api is running with has the sufficient rights of course).
+In the newly created directory, edit the file `config.json` to fit your nagios/icinga/whatever configuration. To get everything running, you just need to change the properties `nagios_main_cfg` to your main core configuration file and `output_dir` to the direcory where the api should manage the object files (and where the user the api is running with has the sufficient rights of course).
 
 If you have done so, fire it up!
 
@@ -71,3 +71,5 @@ Happy authenticating!
 ## Example API Calls
 
 ### 
+
+[RESTlos](https://github.com/Crapworks/RESTlos)
