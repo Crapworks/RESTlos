@@ -7,7 +7,7 @@
 - [Deployment](#deployment)
 - [Authentification](#authentification)
     - [Authentication Modules](#authentication-modules)
-    - [Athentication Decorator](#athentication-decorator)
+    - [Authentication Decorator](#authentication-decorator)
     - [Disable Authentication](#disable-authentication)
 - [Config Files](#config-files)
 - [Example API Calls](#example-api-calls)
@@ -79,7 +79,7 @@ For authentication against a ldap server, the class `AuthLDAP` is located in the
 
 The same applies if you write an additional authentication module (for MySQL or whatever).
 
-### Athentication Decorator
+### Authentication Decorator
 
 To actually use one of the authentication modules, the you have to add it to the decorator list of the view function. Currently there are only to seperate view functions (which are really classes which inherit from the [Flask] _MethodView_ class): `NagiosControlView` and `NagiosObjectView`. The last one handles all of the request to generate/modify/delete objects, the first one is used to provide convenient functions for handling the core, like restarting or validation of the configuration files. It is possible to use different authentication backends for this two views.
 
