@@ -133,7 +133,7 @@ curl -H "content-type: application/json" 'http://admin:password@localhost:5000/h
 ]
 ```
 
-** Get all hosts with _testhost_ in the `host_name` field**
+**Get all hosts with _testhost_ in the `host_name` field**
 ```
 curl -H "content-type: application/json" 'http://admin:password@localhost:5000/host?host_name=testhost'
 ```
@@ -167,7 +167,42 @@ curl -H "content-type: application/json" 'http://admin:password@localhost:5000/h
 
 ### Delete Objetcs
 
+**Delete all host objects with _testhost_ in the `host_name` field**
+
+```
+curl -X DELETE -H "content-type: application/json" 'http://admin:password@localhost:5000/host?host_name=testhost'
+```
+```json
+{
+  "results": [
+    {
+      "200": "successfully deleted host object: testhost2"
+    },
+    {
+      "200": "successfully deleted host object: testhost1"
+    },
+    {
+      "200": "successfully deleted host object: testhost3"
+    }
+  ],
+  "summary": {
+    "failed": 0,
+    "total": 3,
+    "succeeded": 3
+  }
+}
+```
+
 ### Reload Monitoring Core
+
+```
+curl -X POST -H "content-type: application/json" 'http://admin:password@localhost:5000/control?restart'
+```
+```json
+{
+      "result": "successfully sent command to command file"
+}
+```
 
 [RESTlos]:https://github.com/Crapworks/RESTlos
 [Nagios]:http://nagios.org
