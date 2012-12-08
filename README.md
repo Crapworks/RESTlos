@@ -105,6 +105,7 @@ Here are some example api calls via [Curl]. Of course the response depends on yo
 curl -H "content-type: application/json" 'http://admin:password@localhost:5000/host'
 ```
 ```json
+[
   {
     "check_command": "check-host-alive", 
     "name": "generic-host", 
@@ -129,6 +130,7 @@ curl -H "content-type: application/json" 'http://admin:password@localhost:5000/h
     "address": "127.0.0.1"
   }, 
   [...]
+]
 ```
 
 ### Create Objects
