@@ -157,6 +157,7 @@ $ curl -H "content-type: application/json" 'http://admin:password@localhost:5000
     "host_name": "testhost3", 
     "address": "127.0.0.4"
   }
+]
 
 ```
 
