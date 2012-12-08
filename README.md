@@ -1,10 +1,12 @@
 ## About
 
-[RESTlos] \(german for _completely_, _totally_\) is a generic [Nagios] api. Generic means, it can be used with every core that understands the nagios configuration syntax (for example icinga, shinken, etc). It provides a _RESTful_ api for generating any standard nagios object, modify it or delete it. There are also some convenient functions for reloading the core (via command file) or verify the actual configuration via the _REST_ interface.
+[RESTlos] \(german for _completely_, _totally_\) is a generic [Nagios] api. Generic means, it can be used with every core that understands the nagios configuration syntax (for example icinga, shinken, etc). It provides a _RESTful_ api for generating any standard nagios object, modify it or delete it. 
+There are also some convenient functions for reloading the core (via command file) or verify the actual configuration via the _REST_ interface.
 
 ## Current State
 
-This code is currently in a state of beta testing. For me, everything works as expected. You you... maybe not! So, as usual this code is _Open Source_ and so it comes with absolutely no warrenty. So if you f... up you monitoring config: don't blame me!
+This code is currently in a state of beta testing. For me, everything works as expected. You you... maybe not! So, as usual this code is _Open Source_ and so it comes with absolutely no warrenty. 
+That means if you f... up you monitoring config: don't blame me!
 
 ## Requirements
 
@@ -73,4 +75,5 @@ Happy authenticating!
 ### 
 
 [RESTlos]:https://github.com/Crapworks/RESTlos
-[Naguis]:http://nagios.org
+[Nagios]:http://nagios.org
+[Python]:http://python.org
