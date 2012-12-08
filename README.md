@@ -133,6 +133,34 @@ curl -H "content-type: application/json" 'http://admin:password@localhost:5000/h
 ]
 ```
 
+** Get all hosts with _testhost_ in the `host_name` field**
+```
+curl -H "content-type: application/json" 'http://admin:password@localhost:5000/host?host_name=testhost'
+```
+```json
+[
+  {
+    "alias": "testhost2", 
+    "use": "generic-host", 
+    "host_name": "testhost2", 
+    "address": "127.0.0.3"
+  }, 
+  {
+    "alias": "testhost1", 
+    "use": "generic-host", 
+    "host_name": "testhost1", 
+    "address": "127.0.0.2"
+  }, 
+  {
+    "alias": "testhost3", 
+    "use": "generic-host", 
+    "host_name": "testhost3", 
+    "address": "127.0.0.4"
+  }
+
+```
+
+
 ### Create Objects
 
 ### Update Objects
