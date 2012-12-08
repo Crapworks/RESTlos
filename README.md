@@ -72,4 +72,5 @@ Happy authenticating!
 
 ### 
 
-[RESTlos](https://github.com/Crapworks/RESTlos)
+[RESTlos]:https://github.com/Crapworks/RESTlos
+[Naguis]:http://nagios.org
