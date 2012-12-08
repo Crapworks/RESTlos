@@ -50,7 +50,7 @@ If you have done so, fire it up!
 $ ./nagios-api.py
 ```
 
-Now point your browser to [http://localhost:5000](http://localhost:5000) (if you haven't changed the standard port). You should see a page, listing all available endpoints and the corresponding parameters. You can find some example api calls [here](#Examples).
+Now point your browser to [http://localhost:5000](http://localhost:5000) (if you haven't changed the standard port). You should see a page, listing all available endpoints and the corresponding parameters. You can find some example api calls [here](#example-api-calls).
 
 If you are prompted for a password, the initial login credentials are `admin:password`. Very creative, isn't it?
 
@@ -93,12 +93,43 @@ If you don't want authentication **at all**, just delete the `decorators = [...]
 
 ## Config Files
 
-<a name='Examples'/>
 ## Example API Calls
 
 Here are some example api calls via [Curl]. Of course the response depends on your configuration.
 
 ### Find Objects
+
+**Find all host objects**
+
+```
+curl -H "content-type: application/json" 'http://admin:password@localhost:5000/host'
+```
+```json
+  {
+    "check_command": "check-host-alive", 
+    "name": "generic-host", 
+    "notification_interval": "0", 
+    "retain_nonstatus_information": "1", 
+    "failure_prediction_enabled": "1", 
+    "notifications_enabled": "1", 
+    "contact_groups": "admins", 
+    "retain_status_information": "1", 
+    "notification_period": "24x7", 
+    "event_handler_enabled": "1", 
+    "process_perf_data": "1", 
+    "max_check_attempts": "10", 
+    "flap_detection_enabled": "1", 
+    "notification_options": "d,u,r", 
+    "register": "0"
+  }, 
+  {
+    "alias": "localhost", 
+    "use": "generic-host", 
+    "host_name": "localhost", 
+    "address": "127.0.0.1"
+  }, 
+  [...]
+```
 
 ### Create Objects
 
