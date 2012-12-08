@@ -1,3 +1,22 @@
+**Table of Contents**
+
+- [About](#about)
+- [Current State](#current-state)
+- [Requirements](#requirements)
+- [Quick Start](#quick-start)
+- [Deployment](#deployment)
+- [Authentification](#authentification)
+    - [Authentication Modules](#authentication-modules)
+    - [Athentication Decorator](#athentication-decorator)
+    - [Disable Authentication](#disable-authentication)
+- [Config Files](#config-files)
+- [Example API Calls](#example-api-calls)
+    - [Find Objects](#find-objects)
+    - [Create Objects](#create-objects)
+    - [Update Objects](#update-objects)
+    - [Delete Objetcs](#delete-objetcs)
+    - [Reload Monitoring Core](#reload-monitoring-core)
+
 ## About
 
 [RESTlos] \(german for _completely_, _totally_\) is a generic [Nagios] api. Generic means, it can be used with every core that understands the nagios configuration syntax (for example icinga, shinken, etc). It provides a RESTful api for generating any standard nagios object, modify it or delete it. 
@@ -6,7 +25,7 @@ There are also some convenient functions for reloading the core (via command fil
 
 ## Current State
 
-This code is currently in a state of beta testing. For me, everything works as expected. You you... maybe not! So, as usual this code is _Open Source_ and so it comes with absolutely no warrenty. 
+This code is currently in a state of beta testing. For me, everything works as expected. For you... maybe not! So, as usual this code is _Open Source_ and so it comes with absolutely no warrenty. 
 That means if you f... up you monitoring config: don't blame me!
 
 ## Requirements
@@ -31,7 +50,7 @@ If you have done so, fire it up!
 $ ./nagios-api.py
 ```
 
-Now point your browser to http://localhost:5000 (if you haven't changed the standard port). You should see a page, listing all available endpoints and the corresponding parameters. You can find some example api calls [here](#Examples).
+Now point your browser to [http://localhost:5000](http://localhost:5000) (if you haven't changed the standard port). You should see a page, listing all available endpoints and the corresponding parameters. You can find some example api calls [here](#Examples).
 
 If you are prompted for a password, the initial login credentials are `admin:password`. Very creative, isn't it?
 
@@ -50,7 +69,7 @@ If anyone can provide configurations for nginx, etc. I would be happy to receive
 
 ## Authentification
 
-As I already mentioned above, this api uses _basic auth_ for authenticating users. To setup the authentication, you **HAVE TO CHANGE THE CODE**. But don't panic! Everyone who has a basic understanding what a line or a character is should be able to handle this. So let's see how authentication works.
+As I already mentioned above, this api uses _basic auth_ for authenticating users. To setup the authentication, you **HAVE TO CHANGE THE CODE**. But don't panic! Everyone who has a basic understanding of what a line or a character is should be able to handle this. So let's see how authentication works.
 
 ### Authentication Modules
 
@@ -68,10 +87,16 @@ The decorators are defined in the class header with the `decorators = [...]` att
 
 Happy authenticating!
 
+### Disable Authentication
+
+If you don't want authentication **at all**, just delete the `decorators = [...]` lines for the two classes mentioned above.
+
 ## Config Files
 
 <a name='Examples'/>
 ## Example API Calls
+
+Here are some example api calls via [Curl]. Of course the response depends on your configuration.
 
 ### Find Objects
 
@@ -88,3 +113,4 @@ Happy authenticating!
 [Python]:http://python.org
 [Flask]:http://flask.pocoo.org
 [PyNag]:https://github.com/pynag/pynag
+[Curl]:http://curl.haxx.se
