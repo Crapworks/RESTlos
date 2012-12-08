@@ -1,0 +1,32 @@
+{
+    "nagios_main_cfg": "/etc/nagios/nagios.cfg",
+    "output_dir": "/etc/nagios/objects/api",
+    "port": 5000,
+    "logging": {
+        "version": 1,
+        "formatters": {
+            "syslog": {
+                "class": "logging.Formatter",
+                "format": "nagios-api[%(process)d]: <%(levelname)s> %(message)s"
+            }
+        },
+        "handlers": {
+            "console": {
+                "level": "DEBUG",
+                "class":"logging.StreamHandler"
+            },
+            "syslog": {
+                "level": "WARN",
+                "address": "/dev/log",
+                "facility": "daemon",
+                "formatter": "syslog",
+                "class": "logging.handlers.SysLogHandler"
+            }
+        },
+        "root": {
+            "level": "DEBUG",
+            "handlers": ["console", "syslog"],
+            "propagate": "TRUE"
+        }
+    }
+}
