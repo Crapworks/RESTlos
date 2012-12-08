@@ -1,7 +1,8 @@
 ## About
 
-[RESTlos] \(german for _completely_, _totally_\) is a generic [Nagios] api. Generic means, it can be used with every core that understands the nagios configuration syntax (for example icinga, shinken, etc). It provides a _RESTful_ api for generating any standard nagios object, modify it or delete it. 
-There are also some convenient functions for reloading the core (via command file) or verify the actual configuration via the _REST_ interface.
+[RESTlos] \(german for _completely_, _totally_\) is a generic [Nagios] api. Generic means, it can be used with every core that understands the nagios configuration syntax (for example icinga, shinken, etc). It provides a RESTful api for generating any standard nagios object, modify it or delete it. 
+
+There are also some convenient functions for reloading the core (via command file) or verify the actual configuration via the REST interface.
 
 ## Current State
 
@@ -10,9 +11,9 @@ That means if you f... up you monitoring config: don't blame me!
 
 ## Requirements
 
-- [Python] > 2.7
-- [Flask] > 0.9
-- [PyNag] > 0.4.6
+- [Python] > **2.7**
+- [Flask] > **0.9**
+- [PyNag] > **0.4.6**
 
 ## Quick Start
 
@@ -30,26 +31,26 @@ If you have done so, fire it up!
 $ ./nagios-api.py
 ```
 
-Now point your browser to http://localhost:5000 (if you haven't changed the standard port). You should the a page, listing all available endpoints and the corresponding parameters. You can find some example api calls [here](#Examples).
+Now point your browser to http://localhost:5000 (if you haven't changed the standard port). You should see a page, listing all available endpoints and the corresponding parameters. You can find some example api calls [here](#Examples).
 
 If you are prompted for a password, the initial login credentials are `admin:password`. Very creative, isn't it?
 
 ## Deployment
 
-If you want to use it in a production environment, it's *REALY* recommended to deploy the api to a wsgi capable web server! Why?
-- The _Werkzeug_ server shipped with [Flask] is single threaded
+If you want to use it in a production environment, it's **REALY** recommended to deploy the api to a wsgi capable web server! Why?
+- The `Werkzeug` server shipped with [Flask] is single threaded
 - This python script is not trying to be a daemon at all
-- This api currently only supports _basic auth_ and it is a *VERY BAD IDEA(tm)* to use _basic auth_ over unencrypted HTTP.
+- This api currently only supports _basic auth_ and it is a **VERY BAD IDEA(tm)** to use _basic auth_ over unencrypted HTTP.
 
-To use this api with an apache web server, you need to install _mod-wsgi-. In the `contrib` directory you will find a sample apache configuration which can be placed in the `conf.d` directory. You will also find a file called `application.py`, which have to be placed in the same directory als the executable python script. This will load the api as a wsgi application into the web server.
+To use this api with an apache web server, you need to install `mod-wsgi`. In the `contrib` directory you will find a sample apache configuration which can be placed in the `conf.d` directory. You will also find a file called `application.py`, which have to be placed in the same directory als the executable python script. This will load the api as a wsgi application into the web server.
 
-As I already mentioned: *PLEASE* enable SSL for this application.
+As I already mentioned: **PLEASE** enable SSL for this application.
 
 If anyone can provide configurations for nginx, etc. I would be happy to receive a pull request!
 
 ## Authentification
 
-As I already mentioned above, this api uses _basic auth_ for authenticating users. To setup the authentication, you *HAVE TO CHANGE THE CODE*. But don't panic! Everyone who has a basic understanding what a line or a character is should be able to handle this. So let's see how authentication works.
+As I already mentioned above, this api uses _basic auth_ for authenticating users. To setup the authentication, you **HAVE TO CHANGE THE CODE**. But don't panic! Everyone who has a basic understanding what a line or a character is should be able to handle this. So let's see how authentication works.
 
 ### Authentication Modules
 
@@ -72,8 +73,18 @@ Happy authenticating!
 <a name='Examples'/>
 ## Example API Calls
 
-### 
+### Find Objects
+
+### Create Objects
+
+### Update Objects
+
+### Delete Objetcs
+
+### Reload Monitoring Core
 
 [RESTlos]:https://github.com/Crapworks/RESTlos
 [Nagios]:http://nagios.org
 [Python]:http://python.org
+[Flask]:http://flask.pocoo.org
+[PyNag]:https://github.com/pynag/pynag
