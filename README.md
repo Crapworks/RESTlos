@@ -1,4 +1,4 @@
-**Table of Contents**
+## Content
 
 - [About](#about)
 - [Current State](#current-state)
