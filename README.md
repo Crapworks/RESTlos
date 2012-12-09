@@ -10,12 +10,12 @@
     - [Authentication Decorator](#authentication-decorator)
     - [Disable Authentication](#disable-authentication)
 - [Config Files](#config-files)
-- [Example API Calls](#example-api-calls)
-    - [Find Objects](#find-objects)
-    - [Create Objects](#create-objects)
-    - [Update Objects](#update-objects)
-    - [Delete Objetcs](#delete-objetcs)
-    - [Reload Monitoring Core](#reload-monitoring-core)
+- [Example API Calls](https://github.com/Crapworks/RESTlos/wiki/Examples)
+    - [Find Objects](https://github.com/Crapworks/RESTlos/wiki/Examples#find-objects)
+    - [Create Objects](https://github.com/Crapworks/RESTlos/wiki/Examples#create-objects)
+    - [Update Objects](https://github.com/Crapworks/RESTlos/wiki/Examples#update-objects)
+    - [Delete Objetcs](https://github.com/Crapworks/RESTlos/wiki/Examples#delete-objetcs)
+    - [Reload Monitoring Core](https://github.com/Crapworks/RESTlos/wiki/Examples#reload-monitoring-core)
 
 ## About
 
@@ -50,7 +50,7 @@ If you have done so, fire it up!
 $ ./nagios-api.py
 ```
 
-Now point your browser to [http://localhost:5000](http://localhost:5000) (if you haven't changed the standard port). You should see a page, listing all available endpoints and the corresponding parameters. You can find some example api calls [here](#example-api-calls).
+Now point your browser to [http://localhost:5000](http://localhost:5000) (if you haven't changed the standard port). You should see a page, listing all available endpoints and the corresponding parameters. You can find some example api calls [here](https://github.com/Crapworks/RESTlos/wiki/Examples).
 
 If you are prompted for a password, the initial login credentials are `admin:password`. Very creative, isn't it?
 
@@ -95,114 +95,7 @@ If you don't want authentication **at all**, just delete the `decorators = [...]
 
 ## Example API Calls
 
-Here are some example api calls via [Curl]. Of course the response depends on your configuration.
-
-### Find Objects
-
-**Find all host objects**
-
-```
-$ curl -H "content-type: application/json" 'http://admin:password@localhost:5000/host'
-```
-```json
-[
-  {
-    "check_command": "check-host-alive", 
-    "name": "generic-host", 
-    "notification_interval": "0", 
-    "retain_nonstatus_information": "1", 
-    "failure_prediction_enabled": "1", 
-    "notifications_enabled": "1", 
-    "contact_groups": "admins", 
-    "retain_status_information": "1", 
-    "notification_period": "24x7", 
-    "event_handler_enabled": "1", 
-    "process_perf_data": "1", 
-    "max_check_attempts": "10", 
-    "flap_detection_enabled": "1", 
-    "notification_options": "d,u,r", 
-    "register": "0"
-  }, 
-  {
-    "alias": "localhost", 
-    "use": "generic-host", 
-    "host_name": "localhost", 
-    "address": "127.0.0.1"
-  }, 
-  [...]
-]
-```
-
-**Get all hosts with _testhost_ in the `host_name` field**
-```
-$ curl -H "content-type: application/json" 'http://admin:password@localhost:5000/host?host_name=testhost'
-```
-```json
-[
-  {
-    "alias": "testhost2", 
-    "use": "generic-host", 
-    "host_name": "testhost2", 
-    "address": "127.0.0.3"
-  }, 
-  {
-    "alias": "testhost1", 
-    "use": "generic-host", 
-    "host_name": "testhost1", 
-    "address": "127.0.0.2"
-  }, 
-  {
-    "alias": "testhost3", 
-    "use": "generic-host", 
-    "host_name": "testhost3", 
-    "address": "127.0.0.4"
-  }
-]
-```
-
-
-### Create Objects
-
-### Update Objects
-
-### Delete Objetcs
-
-**Delete all host objects with _testhost_ in the `host_name` field**
-
-```
-$ curl -X DELETE -H "content-type: application/json" 'http://admin:password@localhost:5000/host?host_name=testhost'
-```
-```json
-{
-  "results": [
-    {
-      "200": "successfully deleted host object: testhost2"
-    },
-    {
-      "200": "successfully deleted host object: testhost1"
-    },
-    {
-      "200": "successfully deleted host object: testhost3"
-    }
-  ],
-  "summary": {
-    "failed": 0,
-    "total": 3,
-    "succeeded": 3
-  }
-}
-```
-
-### Reload Monitoring Core
-
-```
-$ curl -X POST -H "content-type: application/json" 'http://admin:password@localhost:5000/control?restart'
-```
-```json
-{
-      "result": "successfully sent command to command file"
-}
-```
+[Examples](https://github.com/Crapworks/RESTlos/wiki/Examples)
 
 [RESTlos]:https://github.com/Crapworks/RESTlos
 [Nagios]:http://nagios.org
