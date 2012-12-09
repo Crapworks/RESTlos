@@ -11,11 +11,11 @@
     - [Disable Authentication](#disable-authentication)
 - [Config Files](#config-files)
 - [Example API Calls](https://github.com/Crapworks/RESTlos/wiki/Examples)
-    - [Find Objects](https://github.com/Crapworks/RESTlos/wiki/Examples#find-objects)
-    - [Create Objects](https://github.com/Crapworks/RESTlos/wiki/Examples#create-objects)
-    - [Update Objects](https://github.com/Crapworks/RESTlos/wiki/Examples#update-objects)
-    - [Delete Objetcs](https://github.com/Crapworks/RESTlos/wiki/Examples#delete-objetcs)
-    - [Reload Monitoring Core](https://github.com/Crapworks/RESTlos/wiki/Examples#reload-monitoring-core)
+    - [Find Objects](https://github.com/Crapworks/RESTlos/wiki/Examples#wiki-find-objects)
+    - [Create Objects](https://github.com/Crapworks/RESTlos/wiki/Examples#wiki-create-objects)
+    - [Update Objects](https://github.com/Crapworks/RESTlos/wiki/Examples#wiki-update-objects)
+    - [Delete Objetcs](https://github.com/Crapworks/RESTlos/wiki/Examples#wiki-delete-objetcs)
+    - [Reload Monitoring Core](https://github.com/Crapworks/RESTlos/wiki/Examples#wiki-reload-monitoring-core)
 
 ## About
 
