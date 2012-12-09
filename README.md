@@ -126,7 +126,8 @@ The configuration file `config.json`, which has to be located in the same direct
 main behaivior. It uses the JSON sytnax, just like the api itself. The default configuration should fit for a standard 
 [Nagios] installation on Debian/Ubuntu systems. 
 
-### The most important key are:
+The most important key are:
+
 **nagios_main_cfg**
 
 >Full path to the main configuration file of the core (nagios.cfg, icinga.cfg, etc.)
@@ -145,6 +146,7 @@ In consequence minimal configuration file would look like this
 ```
 
 The two other available keys are:
+
 **port**
 
 >set the port where the stand alone application should listen for incoming tcp connections 
@@ -152,8 +154,10 @@ The two other available keys are:
 **logging**
 
 >control the loggin behavior of the application. This dictionary is directly passed to `logging.config.dictConfig()`.
->For a complete overview of the available options see: [The official documentation of the logging Module](http://docs.python.org/dev/library/logging.config.html)
->By default, the application logs DEBUG output to stdout and everything with level WARN or higher goes to syslog with the `daemon` fascility.
+>For a complete overview of the available options see: 
+>[The official documentation of the logging Module](http://docs.python.org/dev/library/logging.config.html).
+>By default, the application logs DEBUG output to stdout and everything with level WARN or higher goes to syslog
+>with the `daemon` fascility.
 
 ## Example API Calls
 
