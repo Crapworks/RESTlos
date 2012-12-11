@@ -1,10 +1,1 @@
-WSGIScriptAlias /restlos /var/www/restlos/restlos.wsgi
-WSGIDaemonProcess restlos user=www-data group=www-data threads=5
-
-<Directory /var/www/restlos>
-    WSGIProcessGroup restlos
-    WSGIApplicationGroup %{GLOBAL}
-    WSGIPassAuthorization On
-    Order deny,allow
-    Allow from all
-</Directory>
+# TODO: provide a sample vhost configuration
