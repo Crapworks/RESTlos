@@ -2,12 +2,17 @@
 # -*- coding: UTF-8 -*-
 
 from flask import request, abort
-
-# import authentication modules
 from authclass import AuthClass
-from ldapauth import AuthLDAP
 
-__all__ = ['AuthClass', 'AuthDict', 'Authentify', 'AuthLDAP']
+__all__ = ['AuthClass', 'AuthDict', 'Authentify']
+
+# is the ldap module available
+try:
+    from ldapauth import AuthLDAP
+except ImportError:
+    pass
+else:
+    __all__.append('AuthLDAP')
 
 class AuthDict(AuthClass):
     """
