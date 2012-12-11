@@ -1,7 +1,12 @@
-WSGIScriptAlias /restlos /var/www/restlos/restlos.wsgi
+# Place this file in /etc/apache/conf.d and restart the webserver.
+# For this to work, contrib/restlos.wsgi has to be placed in the toplevel
+# directory. In this case, the restlos repository should be placed in 
+# /opt/restlos. Change the directories if you decide to put it somewhere else.
+
+WSGIScriptAlias /restlos /opt/restlos/restlos.wsgi
 WSGIDaemonProcess restlos user=www-data group=www-data threads=5
 
-<Directory /var/www/restlos>
+<Directory /opt/restlos>
     WSGIProcessGroup restlos
     WSGIApplicationGroup %{GLOBAL}
     WSGIPassAuthorization On
