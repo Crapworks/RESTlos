@@ -7,16 +7,22 @@ import logging.handlers
 
 from json import loads
 
-__all__ = ['config']
+__all__ = ['Config']
 
-class Config(dict):
+class Config(object):
     """
     Config: loads the configuration file if possible. If not: use defaults
     """
 
-    def __init__(self, cfg_file='config.json'):
+    config = {}
+
+    def __init__(self):
+        self.load()
+
+    @classmethod
+    def load(cls, cfg_file='config.json'):
         # default configuration
-        self.update( {
+        cls.config.update( {
             'nagios_main_cfg': '/etc/nagios/nagios.cfg',
             'output_dir': '/etc/nagios/objects/api',
             'port': 5000,
@@ -50,15 +56,15 @@ class Config(dict):
         } )
 
         try: 
-            self.update(loads(open(cfg_file, 'r').read()))
+            cls.config.update(loads(open(cfg_file, 'r').read()))
         except Exception, err: 
-            print "unable to open config file %s: %s" % (cfg_file, str(err))
-            print "using defaults"
+            logging.warn("unable to open config file %s: %s - using defaults" % (cfg_file, str(err)))
 
-config = Config()
+    @classmethod
+    def get(cls, key):
+        return cls.config[key]
 
 if __name__ == '__main__':
-    logging.config.dictConfig(config['logging'])
+    logging.config.dictConfig(Config()['logging'])
     logger = logging.getLogger(__name__)
     logger.warn("testing logging function")
-

@@ -59,7 +59,7 @@ a:hover {
 
 #list ul { font-size:18px; }
 #list ul li { }
-#list ul li ul { list-style-image: url("/static/nested.png"); padding:5px 0 5px 18px; font-size:15px; }
+#list ul li ul { list-style-image: url("nested.png"); padding:5px 0 5px 18px; font-size:15px; }
 #list ul li ul li { color:#bfe1f1; height:20px; margin-left:10px; }
 
 #error {

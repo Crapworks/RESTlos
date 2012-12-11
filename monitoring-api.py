@@ -8,13 +8,14 @@ from flask.views import MethodView
 from werkzeug.exceptions import HTTPException, InternalServerError
 from werkzeug.exceptions import default_exceptions, BadRequest
 
-from utils import config
+from utils import Config
 from utils.authentication import Authentify
 
 from pynag import Model
 from json import dumps
 from cgi import escape
 
+import os
 import logging
 import logging.config
 
@@ -94,7 +95,7 @@ class NagiosControlView(MethodView):
         MethodView.__init__(self, *args, **kwargs)
 
         try:
-            self.command_file = Model.Control.Command.find_command_file(config['nagios_main_cfg'])
+            self.command_file = Model.Control.Command.find_command_file(Config.get('nagios_main_cfg'))
         except Exception, err:
             abort(500, 'unable to locate command file: %s' % (str(err), ))
 
@@ -136,8 +137,8 @@ class NagiosObjectView(MethodView):
 
     def __init__(self, *args, **kwargs):
         MethodView.__init__(self, *args, **kwargs)
-        Model.cfg_file=config['nagios_main_cfg']
-        Model.pynag_directory=config['output_dir']
+        Model.cfg_file=Config.get('nagios_main_cfg')
+        Model.pynag_directory=Config.get('output_dir')
 
         self.username = request.authorization.username
         self.endpoint = request.path.lstrip('/')
@@ -242,7 +243,8 @@ class NagiosAPI(Flask):
     def __init__(self, name):
         Flask.__init__(self, name)
 
-        logging.config.dictConfig(config['logging'])
+        Config.load(os.path.join(os.path.dirname(__file__), 'config.json'))
+        logging.config.dictConfig(Config.get('logging'))
 
         self.request_class = CustomRequestClass
         self.endpoints = ApiEndpoints()
@@ -289,5 +291,5 @@ class NagiosAPI(Flask):
 
 if __name__ == '__main__':
     app = NagiosAPI(__name__)
-    #app.run(debug=True, port=config['port'])
+    #app.run(debug=True, port=Config.get('port'))
     app.run(debug=False)
