@@ -24,6 +24,7 @@ class Config(object):
         # default configuration
         cls.config.update( {
             'nagios_main_cfg': '/etc/nagios/nagios.cfg',
+            'nagios_bin': '/usr/sbin/nagios',
             'output_dir': '/etc/nagios/objects/api',
             'port': 5000,
             'logging': {

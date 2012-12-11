@@ -11,6 +11,8 @@ from werkzeug.exceptions import default_exceptions, BadRequest
 from utils import Config
 from utils.authentication import Authentify
 
+from subprocess import check_output, CalledProcessError
+
 from pynag import Model
 from json import dumps
 from cgi import escape
@@ -19,9 +21,7 @@ import os
 import logging
 import logging.config
 
-#TODO: README.md
-#TODO: Sample config.json
-#TODO: MAM config schnipsel mit debug logfile
+# TODO: MySQL Logging Backend
 
 class JSONHTTPException(HTTPException):
     """ JSONHTTPException: this exception provides a detailed error message
@@ -102,7 +102,18 @@ class NagiosControlView(MethodView):
         self.arguments = ['verify', 'restart']
 
     def _verify(self):
-        return Model.Control.Command.restart_program(command_file=self.command_file)
+        try:
+            output = check_output([Config.get('nagios_bin'), '-v', Config.get('nagios_main_cfg')])
+        except CalledProcessError, err:
+            output = err.output
+            returncode = err.returncode
+        except Exception, err:
+            output = str(err)
+            returncode = 255
+        else:
+            returncode = 0
+
+        return {'output': output, 'returncode': returncode}
 
     def _restart(self):
         logging.warn("%s triggered the restart command" % (request.authorization.username), )
