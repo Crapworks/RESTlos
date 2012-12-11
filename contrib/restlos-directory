@@ -5,6 +5,12 @@
 
 WSGIScriptAlias /restlos /opt/restlos/restlos.wsgi
 WSGIDaemonProcess restlos user=www-data group=www-data threads=5
+# If you want to use the verify ability, all nagios config files should 
+# be accessible from the user the api runs with. In case you dont want to
+# use sudo to grant the specific rights, you can run the wsgi application
+# as the nagios user. In this case, uncomment the following line:
+# WSGIDaemonProcess restlos user=nagios group=nagios threads=5
+
 
 <Directory /opt/restlos>
     WSGIProcessGroup restlos
