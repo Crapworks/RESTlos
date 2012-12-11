@@ -38,6 +38,10 @@ That means if you f... up you monitoring config: don't blame me!
 - [Flask] > **0.9**
 - [PyNag] > **0.4.6**
 
+If you want to use LDAP authentication:
+
+- [Python-LDAP] > **2.4**
+
 ## Quick Start
 
 To get everything just up and running, install all of the required packages mentioned above, and check out the current 
@@ -169,3 +173,4 @@ There are some example api calls available in the [Wiki](https://github.com/Crap
 [Flask]:http://flask.pocoo.org
 [PyNag]:https://github.com/pynag/pynag
 [Curl]:http://curl.haxx.se
+[Python-LDAP]:http://www.python-ldap.org
