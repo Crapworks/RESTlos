@@ -22,6 +22,7 @@ import logging
 import logging.config
 
 # TODO: MySQL Logging Backend
+# TODO: Make Authentication configurable via config.json
 
 VERSION="0.2"
 
