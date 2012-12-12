@@ -1,0 +1,2 @@
+Cmnd_Alias     ICINGA_VERIFY = /usr/sbin/icinga -v /etc/icinga/icinga.cfg
+www-data       ALL = NOPASSWD: ICINGA_VERIFY

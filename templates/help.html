@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>API ENDPOINT OVERVIEW</title>
+<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css" media="screen" />
+</head>
+<body>
+<div id="header"></div>
+<div id="wrapper">
+    <div id="help">
+        <h2 class="title">
+            <b>API ENDPOINT OVERVIEW</b>
+        </h2>
+            Please note that this <b>DOES</b> count as a documentation!<br><br>
+        <div id="list">
+            <ul>
+            {% for endpoint in endpoints.keys() %}
+            <p>
+                <li><a href="{{ url_for(endpoint) }}">
+                        {{ url_for(endpoint) }}
+                    </a>
+                    <ul>
+                        {% for arg in endpoints[endpoint] %}
+                        <li>{{ arg }}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </p>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+<div id="footer">
+    This very informational document is brought to you by <b>Schr&ouml;dingers Cat</b>. And isn't.
+</div>
+</body>

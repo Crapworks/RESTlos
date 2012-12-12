@@ -1,0 +1,108 @@
+body {
+	margin: 0;
+	padding: 0;
+	background: #E5E6DD;
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 12px;
+	color: #8A8985;
+}
+
+h1, h2, h3 {
+	margin: 0;
+	padding: 0;
+	text-transform: uppercase;
+	font-family: 'Oswald', sans-serif;
+	font-weight: 500;
+	color: #7D7764;
+}
+
+h1 {
+	font-size: 2em;
+}
+
+h2 {
+	font-size: 2.8em;
+}
+
+h3 {
+	font-size: 1.6em;
+}
+
+a {
+    text-decoration: none;
+    color: #5BA689;
+}
+
+a:hover {
+}
+
+#wrapper {
+    overflow: hidden;
+    min-height: 450px;
+	background: #FFFFFF;
+    padding-bottom: 20px;
+}
+
+#message {
+    background: #F1F2E9;
+    padding: 0px 10px 0px 10px;
+    min-height: 300px;
+    border: 1px dashed silver;
+}
+
+#list {
+    background: #444;
+    padding: 0px 10px 0px 10px;
+    min-height: 300px;
+    border: 3px solid #7D7764;
+}
+
+#list ul { font-size:18px; }
+#list ul li { }
+#list ul li ul { list-style-image: url("nested.png"); padding:5px 0 5px 18px; font-size:15px; }
+#list ul li ul li { color:#bfe1f1; height:20px; margin-left:10px; }
+
+#error {
+    float: left; 
+    width: 700px;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+#help {
+    position: relative;
+    width: 800px;
+    left: 50%;
+    margin-left: -400px;
+    margin-top: 20px;
+}
+
+#image {
+    float: right;
+    margin: 0; padding: 0;
+}
+
+.title {
+    margin: 0px 0px 30px 0px;
+    padding: 0px 0px 10px 0px;
+    border-bottom: 3px solid #E0E1D6;
+    text-shadow: 1px 1px 0px #FFFFFF;
+    font-size: 26px;
+    color: #373737;
+}
+
+#header {
+    clear: both;
+	height: 20px;
+    text-align: center;
+	margin: 0 auto;
+	padding: 20px 0px 0px 0px;
+}
+
+#footer {
+    clear: both;
+	height: 20px;
+    text-align: center;
+	margin: 0 auto;
+	padding: 20px 0px 0px 0px;
+}
