@@ -1,0 +1,23 @@
+{
+    "nagios_main_cfg": "/etc/nagios/nagios.cfg",
+    "output_dir": "/etc/nagios/objects/api",
+    "port": 5000,
+    "auth": {
+        "control": {
+            "provider": "AuthLDAP",
+            "params": {
+                "ldapserver": "ldap.example.com",
+                "domain": "EXAMPLE.COM",
+                "ssl": "TRUE",
+                "groups": [ "admins", "developers" ]
+            }
+        }
+    },
+    "logging": {
+        "root": {
+            "level": "DEBUG",
+            "handlers": ["console", "syslog"],
+            "propagate": "TRUE"
+        }
+    }
+}

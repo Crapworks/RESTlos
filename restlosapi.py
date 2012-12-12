@@ -23,6 +23,7 @@ import logging.config
 
 # TODO: MySQL Logging Backend
 # TODO: Make Authentication configurable via config.json
+# TODO: Test/Beautify LDAP Auth (support for required groups, etc)
 
 VERSION="0.2"
 
