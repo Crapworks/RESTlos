@@ -23,6 +23,8 @@ import logging.config
 
 # TODO: MySQL Logging Backend
 
+VERSION="0.2"
+
 class JSONHTTPException(HTTPException):
     """ JSONHTTPException: this exception provides a detailed error message
     if a json parsing error occures. More helpful that just the standard 400
@@ -319,4 +321,5 @@ class NagiosAPI(Flask):
 
 if __name__ == '__main__':
     app = NagiosAPI(__name__)
+    logging.info(" * starting restlos V%s" % (VERSION, ))
     app.run(port=Config.get('port'))
