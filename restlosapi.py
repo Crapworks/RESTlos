@@ -101,23 +101,40 @@ class NagiosControlView(MethodView):
 
         self.arguments = ['verify', 'restart']
 
+    def _format(self, data):
+        result = {'Error': [], 'Warning': [], 'Total Errors': [], 'Total Warnings': []}
+        for line in data.split('\n'):
+            for key in result.keys():
+                if line.upper().startswith(key.upper()):
+                    result[key].append(line[len(key)+1:].strip())
+
+        for key in result.keys():
+            if len(result[key]) == 1:
+                result[key] = result[key][0]
+            if not result[key]:
+                del result[key]
+
+        return result
+
     def _verify(self):
         try:
             output = check_output([Config.get('nagios_bin'), '-v', Config.get('nagios_main_cfg')])
+            returncode = 0
         except CalledProcessError, err:
             output = err.output
             returncode = err.returncode
         except Exception, err:
             output = str(err)
             returncode = 255
-        else:
-            returncode = 0
 
-        return {'output': output, 'returncode': returncode}
+        result = self._format(output)
+
+        return {'output': result if result else output, 'returncode': returncode}
 
     def _restart(self):
         logging.warn("%s triggered the restart command" % (request.authorization.username), )
-        return Model.Control.Command.restart_program(command_file=self.command_file)
+        Model.Control.Command.restart_program(command_file=self.command_file)
+        return { 'result': 'successfully sent command to command file' }
 
     def post(self):
         if len(request.args.keys()) != 1:
@@ -133,7 +150,7 @@ class NagiosControlView(MethodView):
         except Exception, err:
             abort(500, 'unable to execute action %s: %s' % (action, str(err)))
         else:
-            return jsonify(result=result if result else "successfully sent command to command file")
+            return jsonify(result)
 
 
 class NagiosObjectView(MethodView):
