@@ -319,5 +319,4 @@ class NagiosAPI(Flask):
 
 if __name__ == '__main__':
     app = NagiosAPI(__name__)
-    #app.run(debug=True, port=Config.get('port'))
-    app.run(debug=False)
+    app.run(port=Config.get('port'))
