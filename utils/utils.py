@@ -5,6 +5,8 @@ import logging
 import logging.config
 import logging.handlers
 
+import handlers as restlos_handlers
+
 from copy import deepcopy
 from json import loads
 
