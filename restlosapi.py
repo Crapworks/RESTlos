@@ -176,9 +176,6 @@ class NagiosObjectView(MethodView):
         self.endpoint = request.path.lstrip('/')
         self.endpoints = ApiEndpoints()
 
-    def _json_message(self, msg, code=200):
-        return Response(jsonify(message=msg), code)
-
     def _summary(self, results):
         return {
             "succeeded": len([r for r in results if r.has_key(200) ]), 
@@ -193,8 +190,14 @@ class NagiosObjectView(MethodView):
         # build the "contains" query string
         query = dict([ (key + '__contains', value) for key, value in request.args.iteritems() ])
 
-        result = [ obj['meta']['defined_attributes'] for obj in endpoint_objects.filter(**query)]
-        return Response(dumps(result, indent=None if request.is_xhr else 2), mimetype='application/json')
+        try:
+            result = [ obj['meta']['defined_attributes'] for obj in endpoint_objects.filter(**query)]
+        except IOError, err:
+            abort(500, "error opening config files: %s" % (str(err), ))
+        except:
+            abort(500)
+        else:
+            return Response(dumps(result, indent=None if request.is_xhr else 2), mimetype='application/json')
 
     def delete(self):
         self.endpoints.validate(self.endpoint, request.args)
@@ -203,7 +206,13 @@ class NagiosObjectView(MethodView):
         # build the "contains" query string
         query = dict([ (key + '__contains', value) for key, value in request.args.iteritems() ])
 
-        objects = endpoint_objects.filter(**query)
+        try:
+            objects = endpoint_objects.filter(**query)
+        except IOError, err:
+            abort(500, "error opening config files: %s" % (str(err), ))
+        except:
+            abort(500)
+
         unique_key = self.endpoints.get_unique_key(self.endpoint)
         results = []
         for obj in objects:
@@ -226,8 +235,8 @@ class NagiosObjectView(MethodView):
     def post(self):
         data = request.json
 
-        if not data:
-            return self._json_message('no json received. you need to set your content-type to application/json.')
+        if data is None:
+            return jsonify(message='no json received. you need to set your content-type to application/json.')
 
         if type(data) == list:
             results = map(self._save_or_update, data)
@@ -248,7 +257,12 @@ class NagiosObjectView(MethodView):
             unique_key = self.endpoints.get_unique_key(self.endpoint)
             if unique_key in item.keys():
                 query = { unique_key: item[unique_key] }
-                endpoint_object = getattr(Model, self.endpoint.capitalize()).objects.filter(**query)
+                try:
+                    endpoint_object = getattr(Model, self.endpoint.capitalize()).objects.filter(**query)
+                except IOError, err:
+                    abort(500, "error opening config files: %s" % (str(err), ))
+                except:
+                    abort(500)
 
                 if endpoint_object:
                     endpoint_object = endpoint_object[0]
