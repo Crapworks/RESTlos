@@ -33,7 +33,7 @@ class JSONHTTPException(HTTPException):
     """
 
     def get_body(self, environ):
-        return dumps(dict(description=self.get_description(environ)))
+        return dumps(dict(code=400, message=self.get_description(environ)))
 
     def get_headers(self, environ):
         return [('Content-Type', 'application/json')]
@@ -310,7 +310,7 @@ class NagiosAPI(Flask):
             err = InternalServerError(description="Something went wrong. RUN!")
 
         if request.content_type=='application/json':
-            response = jsonify(message=str(err))
+            response = jsonify(code=err.code, message=str(err))
         else:
             response = Response(render_template('error.html', err=err))
 
