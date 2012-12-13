@@ -1,0 +1,9 @@
+2012-12-13 Christian Eichelmann <crapworks@github.com>
+	* restlos: release 0.2
+	* restlos: first public release
+	* restlos: done - insert/update/delete/search nagios objects
+	* restlos: done - basic documentation
+	* restlos: done - authentication via decorators
+	* restlos: done - uses python logging backend (configurable)
+	* restlos: done - control endpoints (verify config, restart core)
+	* restlos: done - fancy html error message which blame the user
