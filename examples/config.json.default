@@ -1,7 +1,13 @@
 {
     "nagios_main_cfg": "/etc/nagios/nagios.cfg",
+    "nagios_bin": "/usr/sbin/nagios",
     "output_dir": "/etc/nagios/objects/api",
+    "sudo": "FALSE",
     "port": 5000,
+    "auth": {
+        "provider": "AuthDict",
+        "params": {}
+    },
     "logging": {
         "version": 1,
         "formatters": {

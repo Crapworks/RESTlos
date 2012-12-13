@@ -22,9 +22,9 @@ import logging
 import logging.config
 
 # TODO: MySQL Logging Backend
-# TODO: Make Authentication configurable via config.json
 # TODO: Test/Beautify LDAP Auth (support for required groups, etc)
 
+config = Config(os.path.join(os.path.dirname(__file__), 'config.json'))
 VERSION="0.2"
 
 class JSONHTTPException(HTTPException):
@@ -92,14 +92,13 @@ class NagiosControlView(MethodView):
     like reloading the core or verify the configuration
     """
 
-    #decorators = [Authentify(AuthLDAP('ldap.example.com'))]
-    decorators = [Authentify()]
+    decorators = [Authentify(config['auth'])]
 
     def __init__(self, *args, **kwargs):
         MethodView.__init__(self, *args, **kwargs)
 
         try:
-            self.command_file = Model.Control.Command.find_command_file(Config.get('nagios_main_cfg'))
+            self.command_file = Model.Control.Command.find_command_file(config['nagios_main_cfg'])
         except Exception, err:
             abort(500, 'unable to locate command file: %s' % (str(err), ))
 
@@ -122,7 +121,10 @@ class NagiosControlView(MethodView):
 
     def _verify(self):
         try:
-            output = check_output([Config.get('nagios_bin'), '-v', Config.get('nagios_main_cfg')])
+            if config['sudo']:
+                output = check_output(['sudo', config['nagios_bin'], '-v', config['nagios_main_cfg']])
+            else:
+                output = check_output([config['nagios_bin'], '-v', config['nagios_main_cfg']])
             returncode = 0
         except CalledProcessError, err:
             output = err.output
@@ -164,13 +166,12 @@ class NagiosObjectView(MethodView):
     Nagios/Icinga Configurations
     """
 
-    #decorators = [Authentify(AuthLDAP('ldap.example.com'))]
-    decorators = [Authentify()]
+    decorators = [Authentify(config['auth'])]
 
     def __init__(self, *args, **kwargs):
         MethodView.__init__(self, *args, **kwargs)
-        Model.cfg_file=Config.get('nagios_main_cfg')
-        Model.pynag_directory=Config.get('output_dir')
+        Model.cfg_file=config['nagios_main_cfg']
+        Model.pynag_directory=config['output_dir']
 
         self.username = request.authorization.username
         self.endpoint = request.path.lstrip('/')
@@ -274,9 +275,7 @@ class NagiosAPI(Flask):
 
     def __init__(self, name):
         Flask.__init__(self, name)
-
-        Config.load(os.path.join(os.path.dirname(__file__), 'config.json'))
-        logging.config.dictConfig(Config.get('logging'))
+        logging.config.dictConfig(config['logging'])
 
         self.request_class = CustomRequestClass
         self.endpoints = ApiEndpoints()
@@ -324,4 +323,4 @@ class NagiosAPI(Flask):
 if __name__ == '__main__':
     app = NagiosAPI(__name__)
     logging.info(" * starting restlos V%s" % (VERSION, ))
-    app.run(port=Config.get('port'))
+    app.run(port=config['port'])
