@@ -2,6 +2,7 @@
 	* logging: added sql logging handler based on sqlalchemy
 	* documentation: extended documentation/wiki
 	* authentication: authentication is now configurable via config.json
+	* restlos: improved error handling
 
 2012-12-13 Christian Eichelmann <crapworks@github.com>
 	* restlos: release 0.2
