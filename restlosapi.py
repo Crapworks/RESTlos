@@ -21,7 +21,6 @@ import os
 import logging
 import logging.config
 
-# TODO: MySQL Logging Backend
 # TODO: Test/Beautify LDAP Auth (support for required groups, etc)
 
 config = Config(os.path.join(os.path.dirname(__file__), 'config.json'))
@@ -138,7 +137,7 @@ class NagiosControlView(MethodView):
         return {'output': result if result else output, 'returncode': returncode}
 
     def _restart(self):
-        logging.warn("%s triggered the restart command" % (request.authorization.username), )
+        logging.warn("[audit] [user: %s] triggered the restart command" % (request.authorization.username), )
         Model.Control.Command.restart_program(command_file=self.command_file)
         return { 'result': 'successfully sent command to command file' }
 
@@ -212,13 +211,16 @@ class NagiosObjectView(MethodView):
                 obj.delete()
             except Exception, err:
                 results.append({ 500: "unable to delete %s object %s: %s" % (self.endpoint, obj[unique_key], str(err)) })
-                logging.debug("%s failed to delete %s object %s: %s" % (self.username, self.endpoint, obj[unique_key], str(err)))
+                logging.debug("[audit] [user: %s] failed to delete %s object %s: %s" % (self.username, self.endpoint, obj[unique_key], str(err)))
             else:
                 results.append({ 200: "successfully deleted %s object: %s" % (self.endpoint, obj[unique_key]) })
-                logging.info("%s deleted %s object: %s" % (self.username, self.endpoint, obj[unique_key]))
+                logging.info("[audit] [user: %s] deleted %s object: %s" % (self.username, self.endpoint, obj[unique_key]))
 
         summary = self._summary(results)
-        logging.warn("%s deleted %d %s objects (out of %d requested)" % (self.username, summary['succeeded'], self.endpoint, summary['total']))
+        logging.warn("[audit] [user: %s] deleted %d %s objects (out of %d requested)" % (
+            self.username, summary['succeeded'], 
+            self.endpoint, summary['total'])
+        )
         return jsonify(results=results, summary=summary)
 
     def post(self):
@@ -233,7 +235,12 @@ class NagiosObjectView(MethodView):
             results = [self._save_or_update(data)]
 
         summary = self._summary(results)
-        logging.warn("%s stored %d %s objects (out of %d requested)" % (self.username, summary['succeeded'], self.endpoint, summary['total']))
+        logging.warn("[audit] [user: %s] stored %d %s objects (out of %d requested)" % (
+            self.username, 
+            summary['succeeded'], 
+            self.endpoint, 
+            summary['total'])
+        )
         return jsonify(results=results, summary=summary)
 
     def _save_or_update(self, item):
@@ -259,10 +266,10 @@ class NagiosObjectView(MethodView):
             try:
                 endpoint_object.save()
             except Exception, err:
-                logging.debug("%s failed to store %s object %s: %s" % (self.username, self.endpoint, item[unique_key], str(err)))
+                logging.debug("[audit] [user: %s] failed to store %s object %s: %s" % (self.username, self.endpoint, item[unique_key], str(err)))
                 return { 500: 'unable to save %s object %s: %s' % (self.endpoint, item[unique_key], str(err)) }
 
-            logging.info("%s stored %s object %s" % (self.username, self.endpoint, item[unique_key]))
+            logging.info("[audit] [user: %s] stored %s object %s" % (self.username, self.endpoint, item[unique_key]))
             return { 200: "successfully stored %s object: %s" % (self.endpoint, item[unique_key]) }
 
 class NagiosAPI(Flask):
