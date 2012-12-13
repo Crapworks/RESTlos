@@ -6,20 +6,34 @@
     "port": 5000,
     "logging": {
         "version": 1,
+        "formatters": {
+            "syslog": {
+                "class": "logging.Formatter",
+                "format": "nagios-api[%(process)d]: <%(levelname)s> %(message)s"
+            }
+        },
         "handlers": {
             "mysql": {
                 "level": "DEBUG",
                 "class": "utils.handlers.SQLHandler",
-                "dsn": "mysql://user:password@localhost/restlos"
+                "dsn": "mysql://user:password@localhost/restlos",
+                "audit": "TRUE"
             },
             "console": {
                 "level": "DEBUG",
                 "class":"logging.StreamHandler"
             },
+            "syslog": {
+                "level": "WARN",
+                "address": "/dev/log",
+                "facility": "daemon",
+                "formatter": "syslog",
+                "class": "logging.handlers.SysLogHandler"
+            }
         },
         "root": {
             "level": "DEBUG",
-            "handlers": ["console", "mysql"],
+            "handlers": ["console", "syslog", "mysql"],
             "propagate": "TRUE"
         }
     }
