@@ -1,6 +1,6 @@
 {
     "nagios_main_cfg": "/etc/nagios/nagios.cfg",
-    "nabios_bin": "/usr/sbin/nagios",
+    "nagios_bin": "/usr/sbin/nagios",
     "output_dir": "/etc/nagios/objects/api",
     "sudo": false,
     "port": 5000,

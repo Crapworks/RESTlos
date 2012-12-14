@@ -123,6 +123,7 @@ class NagiosControlView(MethodView):
             if config['sudo']:
                 output = check_output(['sudo', config['nagios_bin'], '-v', config['nagios_main_cfg']])
             else:
+                print [config['nagios_bin'], '-v', config['nagios_main_cfg']]
                 output = check_output([config['nagios_bin'], '-v', config['nagios_main_cfg']])
             returncode = 0
         except CalledProcessError, err:
