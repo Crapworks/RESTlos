@@ -16,6 +16,7 @@
     - [Update Objects](https://github.com/Crapworks/RESTlos/wiki/Examples#wiki-update-objects)
     - [Delete Objetcs](https://github.com/Crapworks/RESTlos/wiki/Examples#wiki-delete-objetcs)
     - [Reload Monitoring Core](https://github.com/Crapworks/RESTlos/wiki/Examples#wiki-reload-monitoring-core)
+    - [Verify Configuration](https://github.com/Crapworks/RESTlos/wiki/Examples#wiki-verify-configuration)
 
 ## About
 
