@@ -2,7 +2,7 @@
     "nagios_main_cfg": "/etc/nagios/nagios.cfg",
     "nagios_bin": "/usr/sbin/nagios",
     "output_dir": "/etc/nagios/objects/api",
-    "sudo": "FALSE",
+    "sudo": false,
     "port": 5000,
     "auth": {
         "provider": "AuthDict",
@@ -32,7 +32,7 @@
         "root": {
             "level": "DEBUG",
             "handlers": ["console", "syslog"],
-            "propagate": "TRUE"
+            "propagate": true
         }
     }
 }

@@ -2,7 +2,7 @@
     "nagios_main_cfg": "/etc/nagios/nagios.cfg",
     "nabios_bin": "/usr/sbin/nagios",
     "output_dir": "/etc/nagios/objects/api",
-    "sudo": "FALSE",
+    "sudo": false,
     "port": 5000,
     "logging": {
         "version": 1,
@@ -17,7 +17,7 @@
                 "level": "DEBUG",
                 "class": "utils.handlers.SQLHandler",
                 "dsn": "mysql://user:password@localhost/restlos",
-                "audit": "TRUE"
+                "audit": true
             },
             "console": {
                 "level": "DEBUG",
@@ -34,7 +34,7 @@
         "root": {
             "level": "DEBUG",
             "handlers": ["console", "syslog", "mysql"],
-            "propagate": "TRUE"
+            "propagate": true
         }
     }
 }
