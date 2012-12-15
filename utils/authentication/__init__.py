@@ -3,10 +3,10 @@
 
 import logging
 
+from hashlib import sha256
 from flask import request, abort
-from authclass import AuthClass
 
-__all__ = ['AuthClass', 'AuthDict', 'Authentify']
+__all__ = ['AuthDict', 'Authentify']
 
 # is the ldap module available
 try:
@@ -16,13 +16,17 @@ except ImportError:
 else:
     __all__.append('AuthLDAP')
 
-class AuthDict(AuthClass):
+class AuthDict(object):
     """
     AuthDict: Authenticate a user based on a simple dictionary
+    Default password: "password"...
     """
 
-    def __init__(self, credentials={'admin': 'password'}):
+    def __init__(self, credentials={'admin': '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8'}):
         self.credentials = credentials
+
+    def authenticate(self, username, password):
+        return username in self.credentials.keys() and self.credentials[username] == sha256(password).hexdigest()
 
 
 class Authentify(object):

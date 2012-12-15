@@ -8,8 +8,8 @@
         "provider": "AuthDict",
         "params": {
             "credentials": {
-                "admin": "secret",
-                "guest": "guest"
+                "admin": "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
+                "guest": "84983c60f7daadc1cb8698621f802c0d9f9a3c3c295c810748fb048115c186ec"
             }
         }
     },

@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-from authclass import AuthClass
-
 import ldap
 
-class AuthLDAP(AuthClass):
+class AuthLDAP(object):
     """
     AuthLDAP: Authenticate a user against a ldap server
     """
