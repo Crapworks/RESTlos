@@ -1,0 +1,30 @@
+{
+    "nagios_main_cfg": "/etc/nagios/nagios.cfg",
+    "nagios_bin": "/usr/sbin/nagios",
+    "output_dir": "/etc/nagios/objects/api",
+    "sudo": false,
+    "port": 5000,
+    "auth": {
+        "provider": "AuthDict",
+        "params": {
+            "credentials": {
+                "admin": "secret",
+                "guest": "guest"
+            }
+        }
+    },
+    "logging": {
+        "version": 1,
+        "handlers": {
+            "console": {
+                "level": "DEBUG",
+                "class":"logging.StreamHandler"
+            }
+        },
+        "root": {
+            "level": "DEBUG",
+            "handlers": ["console"],
+            "propagate": true
+        }
+    }
+}

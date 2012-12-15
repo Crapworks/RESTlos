@@ -11,7 +11,7 @@ class AuthClass(object):
     """
 
     def __init__(self):
-        self.auth = {}
+        self.credentials = {}
 
     def authenticate(self, username, password):
-        return username in self.auth.keys() and self.auth[username] == password
+        return username in self.credentials.keys() and self.credentials[username] == password

@@ -21,9 +21,8 @@ class AuthDict(AuthClass):
     AuthDict: Authenticate a user based on a simple dictionary
     """
 
-    def __init__(self):
-        self.auth = {}
-        self.auth['admin'] = 'password'
+    def __init__(self, credentials={'admin': 'password'}):
+        self.credentials = credentials
 
 
 class Authentify(object):
