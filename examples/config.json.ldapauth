@@ -5,14 +5,12 @@
     "port": 5000,
     "sudo": false,
     "auth": {
-        "control": {
-            "provider": "AuthLDAP",
-            "params": {
-                "ldapserver": "ldap.example.com",
-                "domain": "EXAMPLE.COM",
-                "ssl": true,
-                "groups": [ "admins", "developers" ]
-            }
+        "provider": "AuthLDAP",
+        "params": {
+            "ldapserver": "ldap.example.com",
+            "domain": "EXAMPLE.COM",
+            "ssl": true,
+            "groups": [ "admins", "developers" ]
         }
     },
     "logging": {
