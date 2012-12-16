@@ -8,8 +8,11 @@ class AuthLDAP(object):
     AuthLDAP: Authenticate a user against a ldap server
     """
 
-    def __init__(self, ldapserver="127.0.0.1"):
+    def __init__(self, ldapserver="127.0.0.1", domain="WORKSHOP", ssl=True, groups=[]):
         self.ldapserver = ldapserver
+        self.domain = domain
+        self.ssl = ssl
+        self.groups = groups
 
     def authenticate(self, username, password):
         self.server = ldap.open(self.ldapserver)
