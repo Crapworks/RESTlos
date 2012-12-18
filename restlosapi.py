@@ -13,7 +13,7 @@ from utils.authentication import Authentify
 
 from subprocess import check_output, CalledProcessError
 
-from pynag import Model
+from pynag import Model, Parsers
 from json import dumps
 from cgi import escape
 
@@ -55,12 +55,19 @@ class ApiEndpoints(dict):
     attributes.
     """
 
+    main_cfg_values = {}
+
     def __init__(self):
         # create a map of valid endpoints/arguments
         for endpoint in Model.all_attributes.object_definitions.keys():
             self[endpoint] = Model.all_attributes.object_definitions[endpoint].keys()
             self[endpoint] += Model.all_attributes.object_definitions["any"]
         del self["any"]
+
+        if not self.main_cfg_values:
+            parser = Parsers.config(config['nagios_main_cfg'])
+            parser.parse()
+            self.main_cfg_values.update(dict(parser.maincfg_values))
 
         # set endpoint keys
         self.endpoint_keys = {
@@ -81,7 +88,12 @@ class ApiEndpoints(dict):
     def validate(self, endpoint, data={}):
         for attr in data.keys():
             if not attr.startswith('_') and attr not in self[endpoint]:
-                abort(404, "unknown attribute: %s" % (attr, ))
+                return {404: "unknown attribute: %s" % (attr, )}
+            if attr == self.endpoint_keys[endpoint]:
+                for illegal_char in self.main_cfg_values['illegal_object_name_chars']:
+                    if illegal_char in list(data[attr]):
+                        return {400: "illegal character (%s) found in attribute %s" % (illegal_char, attr)}
+        return {200: "OK"}
 
 
 class NagiosControlView(MethodView):
@@ -185,7 +197,9 @@ class NagiosObjectView(MethodView):
         }
 
     def get(self):
-        self.endpoints.validate(self.endpoint, request.args)
+        validate = self.endpoints.validate(self.endpoint, request.args)
+        if not validate.has_key(200):
+            abort(*validate.items()[0])
         endpoint_objects = getattr(Model, self.endpoint.capitalize()).objects
 
         # build the "contains" query string
@@ -201,7 +215,9 @@ class NagiosObjectView(MethodView):
             return Response(dumps(result, indent=None if request.is_xhr else 2), mimetype='application/json')
 
     def delete(self):
-        self.endpoints.validate(self.endpoint, request.args)
+        validate = self.endpoints.validate(self.endpoint, request.args)
+        if not validate.has_key(200):
+            abort(*validate.items()[0])
         endpoint_objects = getattr(Model, self.endpoint.capitalize()).objects
 
         # build the "contains" query string
@@ -272,10 +288,11 @@ class NagiosObjectView(MethodView):
             else:
                 return { 500: 'required key for %s object not set: %s' % (self.endpoint, unique_key) }
 
-            for key, value in item.iteritems():
-                if not key.startswith('_') and key not in self.endpoints[self.endpoint]:
-                    return { 500: "invalid %s attribute: %s" % (self.endpoint, key) }
+            validate = self.endpoints.validate(self.endpoint, item)
+            if not validate.has_key(200):
+                return validate
 
+            for key, value in item.iteritems():
                 endpoint_object.set_attribute(key, value)
 
             try:
