@@ -21,10 +21,8 @@ import os
 import logging
 import logging.config
 
-# TODO: Test/Beautify LDAP Auth (support for required groups, etc)
-
 config = Config(os.path.join(os.path.dirname(__file__), 'config.json'))
-VERSION="0.2"
+VERSION="0.3"
 
 class JSONHTTPException(HTTPException):
     """ JSONHTTPException: this exception provides a detailed error message
