@@ -8,7 +8,7 @@
         "provider": "AuthLDAP",
         "params": {
             "ldapserver": "ldap.example.com",
-            "domain": "EXAMPLE.COM",
+            "basedn": "dc=example,dc=com",
             "ssl": true,
             "groups": [ "admins", "developers" ]
         }
