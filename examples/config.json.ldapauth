@@ -1,0 +1,23 @@
+{
+    "nagios_main_cfg": "/etc/nagios/nagios.cfg",
+    "nagios_bin": "/usr/sbin/nagios",
+    "output_dir": "/etc/nagios/objects/api",
+    "port": 5000,
+    "sudo": false,
+    "auth": {
+        "provider": "AuthLDAP",
+        "params": {
+            "ldapserver": "ldap.example.com",
+            "basedn": "dc=example,dc=com",
+            "ssl": true,
+            "groups": [ "admins", "developers" ]
+        }
+    },
+    "logging": {
+        "root": {
+            "level": "DEBUG",
+            "handlers": ["console", "syslog"],
+            "propagate": true
+        }
+    }
+}

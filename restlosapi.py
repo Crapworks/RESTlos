@@ -13,7 +13,7 @@ from utils.authentication import Authentify
 
 from subprocess import check_output, CalledProcessError
 
-from pynag import Model
+from pynag import Model, Parsers
 from json import dumps
 from cgi import escape
 
@@ -21,9 +21,8 @@ import os
 import logging
 import logging.config
 
-# TODO: MySQL Logging Backend
-
-VERSION="0.2"
+config = Config(os.path.join(os.path.dirname(__file__), 'config.json'))
+VERSION="0.3"
 
 class JSONHTTPException(HTTPException):
     """ JSONHTTPException: this exception provides a detailed error message
@@ -32,7 +31,7 @@ class JSONHTTPException(HTTPException):
     """
 
     def get_body(self, environ):
-        return dumps(dict(description=self.get_description(environ)))
+        return dumps(dict(code=400, message=self.get_description(environ)))
 
     def get_headers(self, environ):
         return [('Content-Type', 'application/json')]
@@ -54,12 +53,19 @@ class ApiEndpoints(dict):
     attributes.
     """
 
+    main_cfg_values = {}
+
     def __init__(self):
         # create a map of valid endpoints/arguments
         for endpoint in Model.all_attributes.object_definitions.keys():
             self[endpoint] = Model.all_attributes.object_definitions[endpoint].keys()
             self[endpoint] += Model.all_attributes.object_definitions["any"]
         del self["any"]
+
+        if not self.main_cfg_values:
+            parser = Parsers.config(config['nagios_main_cfg'])
+            parser.parse()
+            self.main_cfg_values.update(dict(parser.maincfg_values))
 
         # set endpoint keys
         self.endpoint_keys = {
@@ -80,7 +86,12 @@ class ApiEndpoints(dict):
     def validate(self, endpoint, data={}):
         for attr in data.keys():
             if not attr.startswith('_') and attr not in self[endpoint]:
-                abort(404, "unknown attribute: %s" % (attr, ))
+                return {404: "unknown attribute: %s" % (attr, )}
+            if attr == self.endpoint_keys[endpoint]:
+                for illegal_char in self.main_cfg_values['illegal_object_name_chars']:
+                    if illegal_char in list(data[attr]):
+                        return {400: "illegal character (%s) found in attribute %s" % (illegal_char, attr)}
+        return {200: "OK"}
 
 
 class NagiosControlView(MethodView):
@@ -90,14 +101,13 @@ class NagiosControlView(MethodView):
     like reloading the core or verify the configuration
     """
 
-    #decorators = [Authentify(AuthLDAP('ldap.example.com'))]
-    decorators = [Authentify()]
+    decorators = [Authentify(config['auth'])]
 
     def __init__(self, *args, **kwargs):
         MethodView.__init__(self, *args, **kwargs)
 
         try:
-            self.command_file = Model.Control.Command.find_command_file(Config.get('nagios_main_cfg'))
+            self.command_file = Model.Control.Command.find_command_file(config['nagios_main_cfg'])
         except Exception, err:
             abort(500, 'unable to locate command file: %s' % (str(err), ))
 
@@ -120,7 +130,11 @@ class NagiosControlView(MethodView):
 
     def _verify(self):
         try:
-            output = check_output([Config.get('nagios_bin'), '-v', Config.get('nagios_main_cfg')])
+            if config['sudo']:
+                output = check_output(['sudo', config['nagios_bin'], '-v', config['nagios_main_cfg']])
+            else:
+                print [config['nagios_bin'], '-v', config['nagios_main_cfg']]
+                output = check_output([config['nagios_bin'], '-v', config['nagios_main_cfg']])
             returncode = 0
         except CalledProcessError, err:
             output = err.output
@@ -134,7 +148,7 @@ class NagiosControlView(MethodView):
         return {'output': result if result else output, 'returncode': returncode}
 
     def _restart(self):
-        logging.warn("%s triggered the restart command" % (request.authorization.username), )
+        logging.warn("[audit] [user: %s] triggered the restart command" % (request.authorization.username), )
         Model.Control.Command.restart_program(command_file=self.command_file)
         return { 'result': 'successfully sent command to command file' }
 
@@ -162,20 +176,16 @@ class NagiosObjectView(MethodView):
     Nagios/Icinga Configurations
     """
 
-    #decorators = [Authentify(AuthLDAP('ldap.example.com'))]
-    decorators = [Authentify()]
+    decorators = [Authentify(config['auth'])]
 
     def __init__(self, *args, **kwargs):
         MethodView.__init__(self, *args, **kwargs)
-        Model.cfg_file=Config.get('nagios_main_cfg')
-        Model.pynag_directory=Config.get('output_dir')
+        Model.cfg_file=config['nagios_main_cfg']
+        Model.pynag_directory=config['output_dir']
 
         self.username = request.authorization.username
         self.endpoint = request.path.lstrip('/')
         self.endpoints = ApiEndpoints()
-
-    def _json_message(self, msg, code=200):
-        return Response(jsonify(message=msg), code)
 
     def _summary(self, results):
         return {
@@ -185,23 +195,39 @@ class NagiosObjectView(MethodView):
         }
 
     def get(self):
-        self.endpoints.validate(self.endpoint, request.args)
+        validate = self.endpoints.validate(self.endpoint, request.args)
+        if not validate.has_key(200):
+            abort(*validate.items()[0])
         endpoint_objects = getattr(Model, self.endpoint.capitalize()).objects
 
         # build the "contains" query string
         query = dict([ (key + '__contains', value) for key, value in request.args.iteritems() ])
 
-        result = [ obj['meta']['defined_attributes'] for obj in endpoint_objects.filter(**query)]
-        return Response(dumps(result, indent=None if request.is_xhr else 2), mimetype='application/json')
+        try:
+            result = [ obj['meta']['defined_attributes'] for obj in endpoint_objects.filter(**query)]
+        except IOError, err:
+            abort(500, "error opening config files: %s" % (str(err), ))
+        except:
+            abort(500)
+        else:
+            return Response(dumps(result, indent=None if request.is_xhr else 2), mimetype='application/json')
 
     def delete(self):
-        self.endpoints.validate(self.endpoint, request.args)
+        validate = self.endpoints.validate(self.endpoint, request.args)
+        if not validate.has_key(200):
+            abort(*validate.items()[0])
         endpoint_objects = getattr(Model, self.endpoint.capitalize()).objects
 
         # build the "contains" query string
         query = dict([ (key + '__contains', value) for key, value in request.args.iteritems() ])
 
-        objects = endpoint_objects.filter(**query)
+        try:
+            objects = endpoint_objects.filter(**query)
+        except IOError, err:
+            abort(500, "error opening config files: %s" % (str(err), ))
+        except:
+            abort(500)
+
         unique_key = self.endpoints.get_unique_key(self.endpoint)
         results = []
         for obj in objects:
@@ -209,20 +235,23 @@ class NagiosObjectView(MethodView):
                 obj.delete()
             except Exception, err:
                 results.append({ 500: "unable to delete %s object %s: %s" % (self.endpoint, obj[unique_key], str(err)) })
-                logging.debug("%s failed to delete %s object %s: %s" % (self.username, self.endpoint, obj[unique_key], str(err)))
+                logging.debug("[audit] [user: %s] failed to delete %s object %s: %s" % (self.username, self.endpoint, obj[unique_key], str(err)))
             else:
                 results.append({ 200: "successfully deleted %s object: %s" % (self.endpoint, obj[unique_key]) })
-                logging.info("%s deleted %s object: %s" % (self.username, self.endpoint, obj[unique_key]))
+                logging.info("[audit] [user: %s] deleted %s object: %s" % (self.username, self.endpoint, obj[unique_key]))
 
         summary = self._summary(results)
-        logging.warn("%s deleted %d %s objects (out of %d requested)" % (self.username, summary['succeeded'], self.endpoint, summary['total']))
+        logging.warn("[audit] [user: %s] deleted %d %s objects (out of %d requested)" % (
+            self.username, summary['succeeded'], 
+            self.endpoint, summary['total'])
+        )
         return jsonify(results=results, summary=summary)
 
     def post(self):
         data = request.json
 
-        if not data:
-            return self._json_message('no json received. you need to set your content-type to application/json.')
+        if data is None:
+            return jsonify(message='no json received. you need to set your content-type to application/json.')
 
         if type(data) == list:
             results = map(self._save_or_update, data)
@@ -230,7 +259,12 @@ class NagiosObjectView(MethodView):
             results = [self._save_or_update(data)]
 
         summary = self._summary(results)
-        logging.warn("%s stored %d %s objects (out of %d requested)" % (self.username, summary['succeeded'], self.endpoint, summary['total']))
+        logging.warn("[audit] [user: %s] stored %d %s objects (out of %d requested)" % (
+            self.username, 
+            summary['succeeded'], 
+            self.endpoint, 
+            summary['total'])
+        )
         return jsonify(results=results, summary=summary)
 
     def _save_or_update(self, item):
@@ -238,7 +272,12 @@ class NagiosObjectView(MethodView):
             unique_key = self.endpoints.get_unique_key(self.endpoint)
             if unique_key in item.keys():
                 query = { unique_key: item[unique_key] }
-                endpoint_object = getattr(Model, self.endpoint.capitalize()).objects.filter(**query)
+                try:
+                    endpoint_object = getattr(Model, self.endpoint.capitalize()).objects.filter(**query)
+                except IOError, err:
+                    abort(500, "error opening config files: %s" % (str(err), ))
+                except:
+                    abort(500)
 
                 if endpoint_object:
                     endpoint_object = endpoint_object[0]
@@ -247,19 +286,20 @@ class NagiosObjectView(MethodView):
             else:
                 return { 500: 'required key for %s object not set: %s' % (self.endpoint, unique_key) }
 
-            for key, value in item.iteritems():
-                if not key.startswith('_') and key not in self.endpoints[self.endpoint]:
-                    return { 500: "invalid %s attribute: %s" % (self.endpoint, key) }
+            validate = self.endpoints.validate(self.endpoint, item)
+            if not validate.has_key(200):
+                return validate
 
+            for key, value in item.iteritems():
                 endpoint_object.set_attribute(key, value)
 
             try:
                 endpoint_object.save()
             except Exception, err:
-                logging.debug("%s failed to store %s object %s: %s" % (self.username, self.endpoint, item[unique_key], str(err)))
+                logging.debug("[audit] [user: %s] failed to store %s object %s: %s" % (self.username, self.endpoint, item[unique_key], str(err)))
                 return { 500: 'unable to save %s object %s: %s' % (self.endpoint, item[unique_key], str(err)) }
 
-            logging.info("%s stored %s object %s" % (self.username, self.endpoint, item[unique_key]))
+            logging.info("[audit] [user: %s] stored %s object %s" % (self.username, self.endpoint, item[unique_key]))
             return { 200: "successfully stored %s object: %s" % (self.endpoint, item[unique_key]) }
 
 class NagiosAPI(Flask):
@@ -272,9 +312,7 @@ class NagiosAPI(Flask):
 
     def __init__(self, name):
         Flask.__init__(self, name)
-
-        Config.load(os.path.join(os.path.dirname(__file__), 'config.json'))
-        logging.config.dictConfig(Config.get('logging'))
+        logging.config.dictConfig(config['logging'])
 
         self.request_class = CustomRequestClass
         self.endpoints = ApiEndpoints()
@@ -288,7 +326,7 @@ class NagiosAPI(Flask):
             err = InternalServerError(description="Something went wrong. RUN!")
 
         if request.content_type=='application/json':
-            response = jsonify(message=str(err))
+            response = jsonify(code=err.code, message=str(err))
         else:
             response = Response(render_template('error.html', err=err))
 
@@ -322,4 +360,4 @@ class NagiosAPI(Flask):
 if __name__ == '__main__':
     app = NagiosAPI(__name__)
     logging.info(" * starting restlos V%s" % (VERSION, ))
-    app.run(port=Config.get('port'))
+    app.run(port=config['port'])
