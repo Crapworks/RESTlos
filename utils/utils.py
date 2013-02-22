@@ -36,7 +36,7 @@ class Config(dict):
 
     def _default(self):
         return {
-            'nagios_main_cfg': '/etc/nagios/nagios.cfg',
+            'nagios_main_cfg': None, # By default, try to autodetect nagios.cfg location
             'nagios_bin': '/usr/sbin/nagios',
             'sudo': False,
             'output_dir': '/etc/nagios/objects/api',
