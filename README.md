@@ -87,7 +87,7 @@ As I already mentioned: **PLEASE** enable SSL for this application.
 
 If anyone can provide configurations for nginx, etc. I would be happy to receive a pull request!
 
-## Authentification
+## Authentication
 
 As I already mentioned above, this api uses _basic auth_ for authenticating users. To setup the authentication, 
 you **HAVE TO CHANGE THE CODE**. But don't panic! Everyone who has a basic understanding of what a line or a 
