@@ -38,6 +38,7 @@ That means if you f... up you monitoring config: don't blame me!
 - [Python] > **2.7**
 - [Flask] > **0.9**
 - [PyNag] > **0.4.6**
+- [SQLAlchemy] 
 
 If you want to use LDAP authentication:
 
