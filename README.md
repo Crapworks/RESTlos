@@ -61,7 +61,7 @@ running with has the sufficient rights of course).
 If you have done so, fire it up!
 
 ```
-$ ./nagios-api.py
+$ ./restlosapi.py
 ```
 
 Now point your browser to [http://localhost:5000](http://localhost:5000) (if you haven't changed the standard port). 
