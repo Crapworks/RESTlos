@@ -38,6 +38,7 @@ That means if you f... up you monitoring config: don't blame me!
 - [Python] > **2.7**
 - [Flask] > **0.9**
 - [PyNag] > **0.4.6**
+- [SQLAlchemy] 
 
 If you want to use LDAP authentication:
 
@@ -60,7 +61,7 @@ running with has the sufficient rights of course).
 If you have done so, fire it up!
 
 ```
-$ ./nagios-api.py
+$ ./restlosapi.py
 ```
 
 Now point your browser to [http://localhost:5000](http://localhost:5000) (if you haven't changed the standard port). 
@@ -86,7 +87,7 @@ As I already mentioned: **PLEASE** enable SSL for this application.
 
 If anyone can provide configurations for nginx, etc. I would be happy to receive a pull request!
 
-## Authentification
+## Authentication
 
 As I already mentioned above, this api uses _basic auth_ for authenticating users. To setup the authentication, 
 you **HAVE TO CHANGE THE CODE**. But don't panic! Everyone who has a basic understanding of what a line or a 
