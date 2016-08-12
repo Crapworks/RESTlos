@@ -88,7 +88,7 @@ class ApiEndpoints(dict):
             if not attr.startswith('_') and attr not in self[endpoint]:
                 return {404: "unknown attribute: %s" % (attr, )}
             if attr == self.endpoint_keys[endpoint]:
-                for illegal_char in self.main_cfg_values['illegal_object_name_chars']:
+                for illegal_char in self.main_cfg_values.get('illegal_object_name_chars', []):
                     if illegal_char in list(data[attr]):
                         if illegal_char == '*': continue # wildcards are allowed and will be stripped out
                         return {400: "illegal character (%s) found in attribute %s" % (illegal_char, attr)}
