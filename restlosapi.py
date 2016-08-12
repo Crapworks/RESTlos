@@ -339,11 +339,11 @@ class NagiosAPI(Flask):
         self.request_class = CustomRequestClass
         self.endpoints = ApiEndpoints()
 
-        self._register_endpoints()
-        self._register_error_handler()
-        self._register_help_handler()
+        self.__register_endpoints()
+        self.__register_error_handler()
+        self.__register_help_handler()
 
-    def _error_handler(self, err):
+    def __error_handler(self, err):
         if not isinstance(err, HTTPException):
             err = InternalServerError(description="Something went wrong. RUN!")
 
@@ -359,21 +359,21 @@ class NagiosAPI(Flask):
 
         return response
 
-    def _help(self):
+    def __help(self):
         if request.content_type=='application/json':
             return jsonify(endpoints=self.endpoints)
         else:
             return render_template('help.html', endpoints=self.endpoints)
 
-    def _register_help_handler(self):
+    def __register_help_handler(self):
         for endpoint, name in [('/', 'index'), ('/help', 'help')]:
-            self.add_url_rule(endpoint, name, self._help)
+            self.add_url_rule(endpoint, name, self.__help)
 
-    def _register_error_handler(self):
+    def __register_error_handler(self):
         for code in default_exceptions.iterkeys():
-            self.errorhandler(code)(self._error_handler)
+            self.errorhandler(code)(self.__error_handler)
 
-    def _register_endpoints(self):
+    def __register_endpoints(self):
         for endpoint in self.endpoints.keys():
             self.add_url_rule('/' + endpoint, view_func=NagiosObjectView.as_view(endpoint))
         self.add_url_rule('/control', view_func=NagiosControlView.as_view('control'))
