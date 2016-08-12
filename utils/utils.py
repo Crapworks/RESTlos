@@ -41,6 +41,7 @@ class Config(dict):
             'sudo': False,
             'output_dir': '/etc/nagios/objects/api',
             'port': 5000,
+            'host': "127.0.0.1",
             'auth': {
                 'provider': 'AuthDict',
                 'params': {}

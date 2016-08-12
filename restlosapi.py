@@ -88,8 +88,9 @@ class ApiEndpoints(dict):
             if not attr.startswith('_') and attr not in self[endpoint]:
                 return {404: "unknown attribute: %s" % (attr, )}
             if attr == self.endpoint_keys[endpoint]:
-                for illegal_char in self.main_cfg_values['illegal_object_name_chars']:
+                for illegal_char in self.main_cfg_values.get('illegal_object_name_chars', []):
                     if illegal_char in list(data[attr]):
+                        if illegal_char == '*': continue # wildcards are allowed and will be stripped out
                         return {400: "illegal character (%s) found in attribute %s" % (illegal_char, attr)}
         return {200: "OK"}
 
@@ -194,14 +195,36 @@ class NagiosObjectView(MethodView):
             "total": len(results)
         }
 
+    def _build_query(self, arguments):
+        """
+        Build query for pynag. Currently supported:
+        - key=*expr
+        - key=expr*
+        - key=*expr*
+        - key=expr
+        """
+        query = {}
+        for key, value in arguments.iteritems():
+            if value.startswith('*') and value.endswith('*'):
+                query_type = '__contains'
+            elif value.startswith('*'):
+                query_type='__endswith'
+            elif value.endswith('*'):
+                query_type='__startswith'
+            else:
+                query_type = ''
+
+            query[key + query_type] = value.strip('*')
+
+        return query
+
     def get(self):
         validate = self.endpoints.validate(self.endpoint, request.args)
         if not validate.has_key(200):
             abort(*validate.items()[0])
         endpoint_objects = getattr(Model, self.endpoint.capitalize()).objects
 
-        # build the "contains" query string
-        query = dict([ (key + '__contains', value) for key, value in request.args.iteritems() ])
+        query = self._build_query(request.args)
 
         try:
             result = [ obj['meta']['defined_attributes'] for obj in endpoint_objects.filter(**query)]
@@ -218,8 +241,7 @@ class NagiosObjectView(MethodView):
             abort(*validate.items()[0])
         endpoint_objects = getattr(Model, self.endpoint.capitalize()).objects
 
-        # build the "contains" query string
-        query = dict([ (key + '__contains', value) for key, value in request.args.iteritems() ])
+        query = self._build_query(request.args)
 
         try:
             objects = endpoint_objects.filter(**query)
@@ -317,11 +339,11 @@ class NagiosAPI(Flask):
         self.request_class = CustomRequestClass
         self.endpoints = ApiEndpoints()
 
-        self._register_endpoints()
-        self._register_error_handler()
-        self._register_help_handler()
+        self.__register_endpoints()
+        self.__register_error_handler()
+        self.__register_help_handler()
 
-    def _error_handler(self, err):
+    def __error_handler(self, err):
         if not isinstance(err, HTTPException):
             err = InternalServerError(description="Something went wrong. RUN!")
 
@@ -337,21 +359,21 @@ class NagiosAPI(Flask):
 
         return response
 
-    def _help(self):
+    def __help(self):
         if request.content_type=='application/json':
             return jsonify(endpoints=self.endpoints)
         else:
             return render_template('help.html', endpoints=self.endpoints)
 
-    def _register_help_handler(self):
+    def __register_help_handler(self):
         for endpoint, name in [('/', 'index'), ('/help', 'help')]:
-            self.add_url_rule(endpoint, name, self._help)
+            self.add_url_rule(endpoint, name, self.__help)
 
-    def _register_error_handler(self):
+    def __register_error_handler(self):
         for code in default_exceptions.iterkeys():
-            self.error_handler_spec[None][code] = self._error_handler
+            self.errorhandler(code)(self.__error_handler)
 
-    def _register_endpoints(self):
+    def __register_endpoints(self):
         for endpoint in self.endpoints.keys():
             self.add_url_rule('/' + endpoint, view_func=NagiosObjectView.as_view(endpoint))
         self.add_url_rule('/control', view_func=NagiosControlView.as_view('control'))
@@ -360,4 +382,4 @@ class NagiosAPI(Flask):
 if __name__ == '__main__':
     app = NagiosAPI(__name__)
     logging.info(" * starting restlos V%s" % (VERSION, ))
-    app.run(port=config['port'])
+    app.run(host=config['host'], port=config['port'])
