@@ -371,7 +371,7 @@ class NagiosAPI(Flask):
 
     def _register_error_handler(self):
         for code in default_exceptions.iterkeys():
-            self.error_handler_spec[None][code] = self._error_handler
+            self.errorhandler(code)(self._error_handler)
 
     def _register_endpoints(self):
         for endpoint in self.endpoints.keys():
